@@ -31,5 +31,13 @@ public class TableService {
         }
     }
 
+    void deleteTable(String tableId) {
+        try{
+            tableRepository.deleteById(tableId);
+        }catch (DataAccessException e) {
+            throw new Error("data load error : "+e.getMessage());
+        }
+    }
+
 
 }

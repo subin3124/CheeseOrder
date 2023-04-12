@@ -18,5 +18,10 @@ public class ShopEntity {
     @Column
     private String shopPhone;
 
+    @Column
+    private String address;
+
+
+
 
 }

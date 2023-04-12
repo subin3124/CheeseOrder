@@ -11,7 +11,8 @@ import java.util.List;
 @Repository
 public interface TableRepository extends JpaRepository<TableEntity,String> {
     List<TableEntity> findTableEntitiesByShopId(String shopId);
-    @Query(value = "update table set sizeX = :sx, sizeY = :sy, positionX = :px,positionY=:py where shopId = :shopId",nativeQuery = true)
-    void setTablePostion(@Param("sx")int sx, @Param("sy")int sy, @Param("px")int px, @Param("py")int py, @Param("shopId")String shopId);
+    @Query(value = "update table set sizeX = :sx, sizeY = :sy, positionX = :px,positionY=:py where tableId = :tableId",nativeQuery = true)
+    void setTablePostion(@Param("sx")int sx, @Param("sy")int sy, @Param("px")int px, @Param("py")int py, @Param("tableId")String tableId);
+
 
 }
