@@ -1,4 +1,4 @@
-package com.cheeseorder.cheeseorder.DTO;
+package com.cheeseorder.cheeseorder.Entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

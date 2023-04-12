@@ -1,6 +1,6 @@
 package com.cheeseorder.cheeseorder.Service;
 
-import com.cheeseorder.cheeseorder.DTO.QrEntity;
+import com.cheeseorder.cheeseorder.Entity.QrEntity;
 import com.cheeseorder.cheeseorder.Repository.QrRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
@@ -9,10 +9,7 @@ import org.springframework.stereotype.Service;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
 import java.time.LocalDateTime;
-import java.util.Date;
-import java.util.TimeZone;
 
 @Service
 public class QrService {
@@ -20,7 +17,7 @@ public class QrService {
     @Autowired
     QrRepository qrRepository;
 
-    QrEntity CreateNewQrCode(String tableId) {
+   public QrEntity CreateNewQrCode(String tableId) {
         try{
            String date =  "Date"+LocalDateTime.now().getYear()+LocalDateTime.now().getMonthValue()+LocalDateTime.now().getDayOfMonth()+LocalDateTime.now().getHour()+LocalDateTime.now().getMinute()+LocalDateTime.now().getSecond()+LocalDateTime.now().getNano();
             String qrId = tableId+date;

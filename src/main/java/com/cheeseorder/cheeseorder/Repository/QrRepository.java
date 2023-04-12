@@ -1,6 +1,6 @@
 package com.cheeseorder.cheeseorder.Repository;
 
-import com.cheeseorder.cheeseorder.DTO.QrEntity;
+import com.cheeseorder.cheeseorder.Entity.QrEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

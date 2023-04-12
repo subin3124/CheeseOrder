@@ -1,4 +1,4 @@
-package com.cheeseorder.cheeseorder.DTO;
+package com.cheeseorder.cheeseorder.Entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -16,10 +16,13 @@ public class ShopEntity {
     private String shopName;
 
     @Column
-    private String shopPhone;
+    private String shopContact;
 
     @Column
     private String address;
+
+    @Column
+    private String shopEmail;
 
 
 
