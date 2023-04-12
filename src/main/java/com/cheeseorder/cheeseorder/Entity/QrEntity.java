@@ -15,4 +15,7 @@ public class QrEntity {
 
     @Column
     String tableId;
+
+    @Column
+    boolean isVaild;
 }

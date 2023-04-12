@@ -1,5 +1,6 @@
 package com.cheeseorder.cheeseorder.Service;
 
+import com.cheeseorder.cheeseorder.DTO.MessageResponse;
 import com.cheeseorder.cheeseorder.Entity.QrEntity;
 import com.cheeseorder.cheeseorder.Repository.QrRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +18,7 @@ public class QrService {
     @Autowired
     QrRepository qrRepository;
 
-   public QrEntity CreateNewQrCode(String tableId) {
+   public MessageResponse CreateNewQrCode(String tableId) {
         try{
            String date =  "Date"+LocalDateTime.now().getYear()+LocalDateTime.now().getMonthValue()+LocalDateTime.now().getDayOfMonth()+LocalDateTime.now().getHour()+LocalDateTime.now().getMinute()+LocalDateTime.now().getSecond()+LocalDateTime.now().getNano();
             String qrId = tableId+date;
@@ -26,11 +27,36 @@ public class QrService {
             QrEntity entity = new QrEntity();
             entity.setQrId(hashQrId);
             entity.setTableId(tableId);
-           return qrRepository.save(entity);
+            entity.setVaild(true);
+            qrRepository.save(entity);
+            return new MessageResponse(200,entity.getQrId());
         } catch (NoSuchAlgorithmException e) {
             throw new RuntimeException(e);
         }catch (DataAccessException e){
-            throw new Error("Data load Error : "+e.getMessage());
+            return new MessageResponse(400,"Data Access Error : "+e.getMessage());
         }
+    }
+    public boolean isExistQrCode(String tableId) {
+       try{
+           return qrRepository.existsQrEntityByTableId(tableId);
+       }catch (DataAccessException e) {
+           throw new Error(e.getMessage());
+       }
+    }
+    public MessageResponse setUnVaildationQrCode(String tableId) {
+       try{
+           qrRepository.UnvaildationQrCode(tableId);
+           return new MessageResponse(200,"success");
+       }catch (DataAccessException e) {
+           return new MessageResponse(400,"DataAccessError : "+e.getMessage());
+       }
+    }
+    public String getTableIdFromQrCode(String qrId) {
+       try{
+           QrEntity entity = qrRepository.findQrEntityByQrId(qrId);
+          return entity.getTableId();
+       }catch (DataAccessException e) {
+           return null;
+       }
     }
 }
