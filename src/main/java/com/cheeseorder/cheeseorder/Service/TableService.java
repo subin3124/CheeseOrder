@@ -35,7 +35,7 @@ public class TableService {
 
    public MessageResponse setTablePosition(String tableId, TableSize size) {
         try{
-            tableRepository.setTablePostion(size.getWeight(),size.getWeight(),size.getX(),size.getY(),tableId);
+            tableRepository.setTablePosition(size.getWeight(),size.getWeight(),size.getX(),size.getY(),tableId);
             return new MessageResponse(200,"success");
         }catch (DataAccessException e) {
             return new MessageResponse(400,"Data Access Error : " +e.getMessage());
