@@ -32,6 +32,14 @@ public class TableService {
             throw new Error("data load error : "+e.getMessage());
         }
     }
+    public MessageResponse createTable(TableEntity table) {
+       try {
+           tableRepository.save(table);
+           return new MessageResponse(200,"success");
+       }catch (DataAccessException e) {
+           return new MessageResponse(400,"Data Access Error :"+e.getMessage());
+       }
+    }
 
    public MessageResponse setTablePosition(String tableId, TableSize size) {
         try{
