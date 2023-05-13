@@ -27,6 +27,7 @@ public class TableEntity {
     private int sizeY;
     @Column private int positionX;
     @Column private int positionY;
+    @Column private String tableName;
 
 
 
