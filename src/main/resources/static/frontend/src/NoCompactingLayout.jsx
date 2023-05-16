@@ -1,13 +1,13 @@
 import React from "react";
 import _ from "lodash";
 import RGL, { WidthProvider } from "react-grid-layout";
-
+import Box from "@mui/material/Box";
 const ReactGridLayout = WidthProvider(RGL);
 
 export default class NoCompactingLayout extends React.PureComponent {
     static defaultProps = {
         className: "layout",
-        items: 50,
+        items: ["ab","cd","ef"],
         cols: 12,
         rowHeight: 30,
         onLayoutChange: function() {},
@@ -23,10 +23,12 @@ export default class NoCompactingLayout extends React.PureComponent {
     }
 
     generateDOM() {
-        return _.map(_.range(this.props.items), function(i) {
+
+        return _.map(this.props.items, function(i) {
             return (
-                <div key={i}>
-                    <span className="text">{i}</span>
+                <div key={i} style={{backgroundColor:"gray"}}>
+                        <span className="text">{i}</span>
+
                 </div>
             );
         });
@@ -34,14 +36,16 @@ export default class NoCompactingLayout extends React.PureComponent {
 
     generateLayout() {
         const p = this.props;
+        const availableHandles = ["s", "w", "e", "n", "sw", "nw", "se", "ne"];
         return _.map(new Array(p.items), function(item, i) {
             const y = _.result(p, "y") || Math.ceil(Math.random() * 4) + 1;
             return {
                 x: (i * 2) % 12,
                 y: Math.floor(i / 6) * y,
-                w: 2,
-                h: y,
-                i: i.toString()
+                w: 3,
+                h: 3,
+                i: i.toString(),
+                resizeHandles: _.shuffle(availableHandles).slice(0, _.random(1, availableHandles.length-1))
             };
         });
     }
@@ -53,6 +57,7 @@ export default class NoCompactingLayout extends React.PureComponent {
     render() {
         return (
             <ReactGridLayout
+                isResizeable={true}
                 layout={this.state.layout}
                 onLayoutChange={this.onLayoutChange}
                 {...this.props}
@@ -62,11 +67,4 @@ export default class NoCompactingLayout extends React.PureComponent {
         );
     }
 }
-function NoCompactingLayout() {
-    return (
-        NoCompactingLayout
-    )
-}
-if (process.env.STATIC_EXAMPLES === true) {
-    import("../test-hook.jsx").then(fn => fn.default(NoCompactingLayout));
-}
+
