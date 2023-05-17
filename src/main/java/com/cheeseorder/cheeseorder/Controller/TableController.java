@@ -25,7 +25,7 @@ public class TableController {
         adminMainResponse.setShop(shopService.getShopInfo(shopId));
         return adminMainResponse;
     }
-    @PostMapping("/Admin/Create/Table")
+    @PostMapping("/Admin/Create/{TableId}")
     private MessageResponse CreateTable(@PathVariable("TableId") String tableId, @RequestBody TableEntity table) {
        return tableService.createTable(table);
     }
