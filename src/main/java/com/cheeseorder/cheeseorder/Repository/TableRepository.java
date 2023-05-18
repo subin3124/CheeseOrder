@@ -10,9 +10,11 @@ import java.util.List;
 
 @Repository
 public interface TableRepository extends JpaRepository<TableEntity,String> {
+
     List<TableEntity> findTableEntitiesByShopId(long shopId);
-    @Query(value = "update table set sizeX = :sx, sizeY = :sy, positionX = :px,positionY=:py where tableId = :tableId",nativeQuery = true)
+    @Query(value = "update table set sizex = :sx, sizey = :sy, positionx = :px,positiony=:py where tableId = :tableId",nativeQuery = true)
     void setTablePosition(@Param("sx")int sx, @Param("sy")int sy, @Param("px")int px, @Param("py")int py, @Param("tableId")String tableId);
 
-    List<TableEntity> findTableEntitiesByShopIdAndFloor(long shopId, int floor);
+
+    List<TableEntity> findTableEntitiesByShopIdAndFloor(long ShopId, int floor);
 }

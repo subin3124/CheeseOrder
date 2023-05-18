@@ -29,6 +29,7 @@ public class TableService {
             List<TableEntity> entityList = tableRepository.findTableEntitiesByShopIdAndFloor(shopId, floor);
             return entityList;
         }catch (DataAccessException e) {
+            e.printStackTrace();
             throw new Error("data load error : "+e.getMessage());
         }
     }

@@ -45,7 +45,7 @@ public class QrService {
     }
     public MessageResponse setUnVaildationQrCode(String tableId) {
        try{
-           qrRepository.UnvaildationQrCode(tableId);
+           qrRepository.invalidationQrCode(tableId);
            return new MessageResponse(200,"success");
        }catch (DataAccessException e) {
            return new MessageResponse(400,"DataAccessError : "+e.getMessage());

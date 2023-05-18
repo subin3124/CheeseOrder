@@ -1,6 +1,7 @@
 import React from "react";
 import _ from "lodash";
 import { Responsive, WidthProvider } from "react-grid-layout";
+import RequestObject from "./RequestObject";
 const ResponsiveReactGridLayout = WidthProvider(Responsive);
 
 export default class DragFromOutsideLayout extends React.Component {
@@ -10,10 +11,13 @@ export default class DragFromOutsideLayout extends React.Component {
         onLayoutChange: function() {},
         cols: { lg: 12, md: 10, sm: 6, xs: 4, xxs: 2 },
     };
-
+    data=new Object();
     state = {
         currentBreakpoint: "lg",
-        compactType: " ",
+        preventCollision: true,
+        compactType: "horizontal",
+        horizontalCompact: false,
+        verticalCompact: false,
         mounted: false,
         layouts: { lg: generateLayout() }
     };
@@ -26,12 +30,23 @@ export default class DragFromOutsideLayout extends React.Component {
         return _.map(this.state.layouts.lg, function(l, i) {
             return (
                 <div key={i} style={{backgroundColor:"gray"}}>
-                    <span className={"text"}>{i}</span>
+                    {1 ? (
+                        <div >
+                            <span className="text">{l.i}</span>
+                        </div>
+                    ) : (
+                        <div>
+                            <span className="text">{l.i}</span>
+                        </div>
+                    )}
                 </div>
             );
         });
     }
-
+    async getTablelist() {
+        let obj = new RequestObject();
+        await obj.getTableList(0, 0).then(()=> this.onNewLayout());
+    }
     onBreakpointChange = breakpoint => {
         this.setState({
             currentBreakpoint: breakpoint
@@ -40,7 +55,7 @@ export default class DragFromOutsideLayout extends React.Component {
 
     onCompactTypeChange = () => {
         const { compactType: oldCompactType } = this.state;
-        const compactType = " ";
+        const compactType = " "
         this.setState({ compactType });
     };
 
@@ -53,6 +68,11 @@ export default class DragFromOutsideLayout extends React.Component {
             layouts: { lg: generateLayout() }
         });
     };
+
+    constructor(props, context) {
+        super(props, context);
+        this.getTablelist();
+    }
 
     onDrop = (layout, layoutItem, _event) => {
         alert(`Dropped element props:\n${JSON.stringify(layoutItem, ['x', 'y', 'w', 'h'], 2)}`);
@@ -96,8 +116,9 @@ export default class DragFromOutsideLayout extends React.Component {
                     // I like to have it animate on mount. If you don't, delete `useCSSTransforms` (it's default `true`)
                     // and set `measureBeforeMount={true}`.
                     useCSSTransforms={this.state.mounted}
-                    compactType={this.state.compactType}
-                    preventCollision={!this.state.compactType}
+                    compactType={"horizontal"}
+                    verticalCompact={false}
+                    preventCollision={true}
                     isDroppable={true}
                 >
                     {this.generateDOM()}
@@ -108,14 +129,17 @@ export default class DragFromOutsideLayout extends React.Component {
 }
 
 function generateLayout() {
-    return _.map(_.range(0, 25), function(item, i) {
-        var y = Math.ceil(Math.random() * 4) + 1;
+
+    return _.map(RequestObject.data, function(item, i) {
+
+        console.log("아이템 : "+item.positionX);
         return {
-            x: Math.round(Math.random() * 5) * 2,
-            y: Math.floor(i / 6) * y,
-            w: 2,
-            h: y,
-            i: i.toString()
+            x: i,
+            y: i,
+            w: item.sizeX,
+            h: item.sizeY,
+            i: item.tableId,
+           // isConstruct: item.isConstruct
         };
     });
 }

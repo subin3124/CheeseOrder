@@ -9,6 +9,8 @@ import com.cheeseorder.cheeseorder.Service.TableService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @CrossOrigin("*")
 @RestController
 public class TableController {
@@ -19,11 +21,10 @@ public class TableController {
     @Autowired
     ShopService shopService;
     @GetMapping("/Admin/{ShopId}/{floor}")
-    private AdminMainResponse MainView(@PathVariable("ShopId") long shopId,@PathVariable("floor") int floor) {
+    private List<TableEntity> MainView(@PathVariable("ShopId") long shopId, @PathVariable("floor") int floor) {
         AdminMainResponse adminMainResponse = new AdminMainResponse();
-        adminMainResponse.setTable(tableService.GetTablesWithFloorAndShopId(shopId,floor));
-        adminMainResponse.setShop(shopService.getShopInfo(shopId));
-        return adminMainResponse;
+        System.out.println("get data : "+shopId);
+        return tableService.GetTablesWithFloorAndShopId(shopId,floor);
     }
     @PostMapping("/Admin/Create/{TableId}")
     private MessageResponse CreateTable(@PathVariable("TableId") String tableId, @RequestBody TableEntity table) {
