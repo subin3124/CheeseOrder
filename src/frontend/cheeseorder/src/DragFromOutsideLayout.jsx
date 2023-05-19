@@ -12,7 +12,10 @@ export default class DragFromOutsideLayout extends React.Component {
         cols: { lg: 12, md: 10, sm: 6, xs: 4, xxs: 2 },
     };
     data=new Object();
+    obj = new RequestObject();
     state = {
+        shopId:"0001",
+        floor: 1,
         currentBreakpoint: "lg",
         preventCollision: true,
         compactType: "horizontal",
@@ -29,14 +32,16 @@ export default class DragFromOutsideLayout extends React.Component {
     generateDOM() {
         return _.map(this.state.layouts.lg, function(l, i) {
             return (
-                <div key={i} style={{backgroundColor:"gray"}}>
-                    {1 ? (
+                <div key={l.i} style={{backgroundColor:"gray"}}>
+                    {!l.isConstruct ? (
                         <div >
-                            <span className="text">{l.i}</span>
+                            <span className="text">{l.i}</span><br/>
+                            <span className="text">{l.name}</span>
                         </div>
                     ) : (
                         <div>
-                            <span className="text">{l.i}</span>
+                            <span className="text">{l.i}</span><br/>
+                            <span className="text">{l.name}</span>
                         </div>
                     )}
                 </div>
@@ -44,8 +49,7 @@ export default class DragFromOutsideLayout extends React.Component {
         });
     }
     async getTablelist() {
-        let obj = new RequestObject();
-        await obj.getTableList(0, 0).then(()=> this.onNewLayout());
+        await this.obj.getTableList(0, 0).then(()=> this.onNewLayout());
     }
     onBreakpointChange = breakpoint => {
         this.setState({
@@ -74,36 +78,51 @@ export default class DragFromOutsideLayout extends React.Component {
         this.getTablelist();
     }
 
-    onDrop = (layout, layoutItem, _event) => {
-        alert(`Dropped element props:\n${JSON.stringify(layoutItem, ['x', 'y', 'w', 'h'], 2)}`);
+    onDrop = async (layout, layoutItem, _event) => {
+        //  alert(`Dropped element props:\n${JSON.stringify(layoutItem, ['x', 'y', 'w', 'h'], 2)}`);
+        let tableId = prompt("테이블 아이디를 입력하세요.");
+        tableId = this.state.shopId + this.state.floor + tableId;
+        let Name = prompt("테이블 이름을 입력하세요.");
+        let tableInfo = {
+            positionX: layoutItem.x,
+            positionY: layoutItem.y,
+            sizeX: layoutItem.w,
+            sizeY: layoutItem.h,
+            tableId: tableId,
+            tableName: Name,
+            isConstruct: false,
+            shopId: this.state.shopId,
+            floor: this.state.floor
+        }
+            await this.obj.createTable(tableInfo).then(r => {
+                this.getTablelist();
+                this.onNewLayout();
+            });
+
+
+
+
     };
+    onDragStop = (layout,oldItem,newItem) => {
+        let obj = new RequestObject();
+        obj.moveTable(newItem.i, newItem.x, newItem.y, newItem.h, newItem.w).then( r =>{});
+    }
 
     render() {
         return (
             <div>
-                <div>
-                    Current Breakpoint: {this.state.currentBreakpoint} (
-                    {this.props.cols[this.state.currentBreakpoint]} columns)
-                </div>
-                <div>
-                    Compaction type:{" "}
-                    {_.capitalize(this.state.compactType) || "No Compaction"}
-                </div>
-                <button onClick={this.onNewLayout}>Generate New Layout</button>
-                <button onClick={this.onCompactTypeChange}>
-                    Change Compaction Type
-                </button>
                 <div
                     className="droppable-element"
                     draggable={true}
                     unselectable="on"
+                    style={{backgroundColor:"gray",width:100,height:50}}
                     // this is a hack for firefox
                     // Firefox requires some kind of initialization
                     // which we can do by adding this attribute
                     // @see https://bugzilla.mozilla.org/show_bug.cgi?id=568313
                     onDragStart={e => e.dataTransfer.setData("text/plain", "")}
                 >
-                    Droppable Element (Drag me!)
+                    테이블
                 </div>
                 <ResponsiveReactGridLayout
                     {...this.props}
@@ -116,8 +135,10 @@ export default class DragFromOutsideLayout extends React.Component {
                     // I like to have it animate on mount. If you don't, delete `useCSSTransforms` (it's default `true`)
                     // and set `measureBeforeMount={true}`.
                     useCSSTransforms={this.state.mounted}
-                    compactType={"horizontal"}
+                    compactType={" "}
                     verticalCompact={false}
+                    onDragStop={this.onDragStop}
+                    onResizeStop={this.onDragStop}
                     preventCollision={true}
                     isDroppable={true}
                 >
@@ -132,14 +153,15 @@ function generateLayout() {
 
     return _.map(RequestObject.data, function(item, i) {
 
-        console.log("아이템 : "+item.positionX);
+    //    console.log("아이템 : "+item.positionX);
         return {
-            x: i,
-            y: i,
+            x: item.positionX,
+            y: item.positionY,
             w: item.sizeX,
             h: item.sizeY,
             i: item.tableId,
-           // isConstruct: item.isConstruct
+           isConstruct: item.isConstruct,
+            name:item.tableName
         };
     });
 }

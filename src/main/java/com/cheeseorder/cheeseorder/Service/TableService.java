@@ -35,6 +35,9 @@ public class TableService {
     }
     public MessageResponse createTable(TableEntity table) {
        try {
+           if(tableRepository.existsById(table.getTableId())) {
+               return new MessageResponse(400,"테이블아이디가 중복됩니다.");
+           }
            tableRepository.save(table);
            return new MessageResponse(200,"success");
        }catch (DataAccessException e) {
@@ -44,9 +47,16 @@ public class TableService {
 
    public MessageResponse setTablePosition(String tableId, TableSize size) {
         try{
-            tableRepository.setTablePosition(size.getWeight(),size.getWeight(),size.getX(),size.getY(),tableId);
+            System.out.println("service:"+size.getY());
+            TableEntity oneEntity = tableRepository.findTableEntityByTableId(tableId);
+            oneEntity.setPositionX(size.getX());
+            oneEntity.setPositionY(size.getY());
+            oneEntity.setSizeX(size.getWeight());
+            oneEntity.setSizeY(size.getHeight());
+            tableRepository.save(oneEntity);
             return new MessageResponse(200,"success");
         }catch (DataAccessException e) {
+            e.printStackTrace();
             return new MessageResponse(400,"Data Access Error : " +e.getMessage());
         }
     }

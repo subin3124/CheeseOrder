@@ -15,4 +15,38 @@ static data = new Array();
         RequestObject.data = json;
         console.log(json);
     }
+    async moveTable(tableId,x,y,h,w) {
+       let tableSize = {
+           x: x,
+           y:y,
+           weight:w,
+           height:h,
+       }
+       console.log(tableSize);
+        let f = await fetch("http://localhost:8080/Admin/Move/"+tableId,{
+           headers : {
+               "content-type" : "application/json"
+           },
+            method:"post",
+            body:JSON.stringify(tableSize),
+        });
+       let json = await f.json();
+       if(json.code!=200) {
+           alert("오류코드 : "+json.code+"\n"+json.message);
+       }
+       console.log("성공?? movetable");
+    }
+    async createTable(TableInfo) {
+        let f = await fetch("http://localhost:8080/Admin/Create/"+TableInfo.tableid,{
+           headers:{
+               "content-type" : "application/json",
+           },
+            method : "post",
+            body:JSON.stringify(TableInfo),
+        });
+        let json = await f.json();
+        if(json.code!=200) {
+            alert("오류코드 : "+json.code+"\n"+json.message);
+        }
+    }
 }

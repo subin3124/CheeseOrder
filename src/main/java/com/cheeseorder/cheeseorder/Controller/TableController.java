@@ -30,8 +30,10 @@ public class TableController {
     private MessageResponse CreateTable(@PathVariable("TableId") String tableId, @RequestBody TableEntity table) {
        return tableService.createTable(table);
     }
-    @PostMapping("/Admin/Move/{TableId})")
+    @PostMapping("/Admin/Move/{TableId}")
     private MessageResponse MoveTable(@PathVariable("TableId") String tableId ,@RequestBody TableSize tableSize) {
+        System.out.println(tableSize.getY());
+
        return tableService.setTablePosition(tableId,tableSize);
     }
 }
