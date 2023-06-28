@@ -36,4 +36,10 @@ public class TableController {
 
        return tableService.setTablePosition(tableId,tableSize);
     }
+
+    @DeleteMapping("/Admin/Delete/{TableId}")
+    private MessageResponse DeleteMapping(@PathVariable("TableId") String tableId) {
+        System.out.println("table deleted : "+tableId);
+        return tableService.deleteTable(tableId);
+    }
 }

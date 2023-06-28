@@ -1,7 +1,11 @@
-import React from "react";
+import React, {useState} from "react";
 import _ from "lodash";
 import { Responsive, WidthProvider } from "react-grid-layout";
 import RequestObject from "./RequestObject";
+import { Link } from 'react-router-dom';
+
+import Popup from 'reactjs-popup';
+import {QRCodeSVG} from 'qrcode.react';
 const ResponsiveReactGridLayout = WidthProvider(Responsive);
 
 export default class DragFromOutsideLayout extends React.Component {
@@ -28,20 +32,36 @@ export default class DragFromOutsideLayout extends React.Component {
     componentDidMount() {
         this.setState({ mounted: true });
     }
+    onRefresh() {
+        this.onNewLayout();
+    }
+    generateDOM(th) {
+        async function onTableDeleteClick(tableId) {
+           await th.obj.deleteTable(tableId).then(() => {
+               window.location.reload();
+           });
+        }
 
-    generateDOM() {
         return _.map(this.state.layouts.lg, function(l, i) {
+           // const [open, setOpen] = useState(false);
+           // const [qraddr,setQrAddr] = useState();
+            let adr = "/QrCode/"+l.i;
             return (
+
                 <div key={l.i} style={{backgroundColor:"gray"}}>
                     {!l.isConstruct ? (
                         <div >
                             <span className="text">{l.i}</span><br/>
                             <span className="text">{l.name}</span>
+                            <button onClick={() =>  onTableDeleteClick(l.i)}>테이블삭제</button>
+                            <Link to={adr}><button>QR</button></Link>
+
                         </div>
                     ) : (
                         <div>
                             <span className="text">{l.i}</span><br/>
                             <span className="text">{l.name}</span>
+                            <button type="button" onClick={() => this.obj.deleteTable(l.i)}>테이블삭제</button>
                         </div>
                     )}
                 </div>
@@ -142,7 +162,7 @@ export default class DragFromOutsideLayout extends React.Component {
                     preventCollision={true}
                     isDroppable={true}
                 >
-                    {this.generateDOM()}
+                    {this.generateDOM(this)}
                 </ResponsiveReactGridLayout>
             </div>
         );

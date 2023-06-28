@@ -61,11 +61,14 @@ public class TableService {
         }
     }
 
-   public void deleteTable(String tableId) {
+   public MessageResponse deleteTable(String tableId) {
         try{
             tableRepository.deleteById(tableId);
+            return new MessageResponse(200,"success");
+
         }catch (DataAccessException e) {
-            throw new Error("data load error : "+e.getMessage());
+            e.printStackTrace();
+            return new MessageResponse(400,"data load error : "+e.getMessage());
         }
     }
 
