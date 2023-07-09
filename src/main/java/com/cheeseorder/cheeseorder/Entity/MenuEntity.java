@@ -12,7 +12,7 @@ import lombok.Setter;
 public class MenuEntity {
 
     @Id
-    private String menuId;
+    private long menuId;
 
     @Column
     private long shopId;

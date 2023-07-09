@@ -6,6 +6,7 @@ import com.cheeseorder.cheeseorder.Entity.MenuEntity;
 import com.cheeseorder.cheeseorder.Repository.MenuRepository;
 import org.aspectj.bridge.Message;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -30,7 +31,16 @@ public class MenuService {
         }
     }
 
-    public MessageResponse uploadImage(MultipartFile image,String menuId) {
+    public ObjectResponse addMenu(long shopId, MenuEntity menuEntity) {
+        try{
+           MenuEntity entity = menuRepository.save(menuEntity);
+            return new ObjectResponse(200,entity);
+        }catch (DataAccessException e){
+            return new ObjectResponse(400,e.getMessage());
+        }
+    }
+
+    public MessageResponse uploadImage(MultipartFile image,long menuId) {
         try {
             String FILE_SERVER_PATH = "";
             LocalDateTime localDateTime = LocalDateTime.now();
@@ -38,6 +48,14 @@ public class MenuService {
             return new MessageResponse(200,FILE_SERVER_PATH + "/image_" + menuId + "_" + localDateTime.toString() + ".png");
         }catch (IOException e) {
             return new MessageResponse(400, e.getMessage());
+        }
+    }
+    public MessageResponse deleteMenu(long menuId) {
+        try{
+            menuRepository.deleteById(menuId);
+            return new MessageResponse(200,"성공");
+        }catch (DataAccessException e) {
+            return new MessageResponse(400,e.getMessage());
         }
     }
 }
